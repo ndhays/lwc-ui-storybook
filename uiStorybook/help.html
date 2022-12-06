@@ -1,0 +1,101 @@
+<template>
+
+    <h1>Storybook Configuration Reference</h1>
+    <hr/>
+    <!-- <p>A story is defined by a JS configuration file (ie. <code>stories/example.story.js</code>) and one or more HTML template files (<code>stories/example/example.story.html</code>)</p>
+    <hr/>
+    <h2>Configuration (Javascript)</h2> -->
+    <div>
+      <div class="storybook-req pb-2 text-sm">required properties in red</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>version</td>
+            <td>string</td>
+            <td>optional version of the component (defaults to 'beta')</td>
+          </tr>
+          <tr>
+            <td class="storybook-req">title</td>
+            <td>string</td>
+            <td>the title that appears in the sidebar list</td>
+          </tr>
+          <tr>
+            <td>order</td>
+            <td>string</td>
+            <td>optional to order components other than alphabetically in sidebar list</td>
+          </tr>
+          <tr>
+            <td>grouping</td>
+            <td>string</td>
+            <td>optional to add components to a group (ie. OOTB)</td>
+          </tr>
+          <tr>
+            <td>description</td>
+            <td>number</td>
+            <td>optional description which appears under the component developer name in the info panel below</td>
+          </tr>
+          <tr>
+            <td>selector</td>
+            <td>string</td>
+            <td>optional selector to locate the component<br/>(it defaults to the kebab-case version of the component, for example "myComponent" becomes "c-my-component")</td>
+          </tr>
+          <tr>
+            <td>hideDefault</td>
+            <td>boolean</td>
+            <td>optional to hide the default variation<br/>(but still have default properties for all variations)</td>
+          </tr>
+          <tr>
+            <td class="storybook-req">template</td>
+            <td>object</td>
+            <td>this is a reference to an imported <code>&lt;template&gt;</code> file<br/>(the template provided is used for all variations of a component but it can also be overridden at the variation level)</code></td>
+          </tr>
+          <tr>
+            <td>helpText</td>
+            <td>object<br/><span class="tooltip"><lightning-icon icon-name="utility:info"></lightning-icon><span class="tooltip-content">The object keys correspond to @api property names<br/>and values are the help text:<br/><br/><code>&lcub;<br/>&nbsp;&nbsp;[exampleProperty]: 'tooltip text...'<br/>&rcub;</code></span></span></td>
+            <td>optionally add help text (as a tooltip) to @api properties<br/>(this is a great way to provide context around valid property type structure or values)</td>
+          </tr>
+          <tr>
+            <td>otherData</td>
+            <td>object</td>
+            <td>optional additional data for display purposes accessible to all variation templates<br/>Note: this should not be used for data expected through @api properties, backend data, or application state</td>
+          </tr>
+          <tr>
+            <td class="storybook-req">variations</td>
+            <td>object&lt;string, object&gt;</td>
+            <td>this object defines the variations in the sidebar list<br/>
+              - the key is the name of the variation<br/>
+              - the value is an object with properties and initial values<br/>
+              - a <span class="storybook-req">Default</span> variation is required<br/>
+              - the Default properties are applied to all variations but can be overridden<br/>
+              - there are a few "special" properties that can be used for specific variations:<br/><br/>
+              <code>__template</code> can be used to provide a specific template<br/>
+              <code>__HTML</code> can be used to override the content displayed in the "HTML" tab in the info panel below<br/>
+              <code>__slotHTML</code> can be used to add HTML inside the component HTML
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr/>
+      <h2>Additional Documentation</h2>
+      <h4>Actions</h4>
+      <p>This tab displays events emitted from the component. The callback handler <button onclick={handleStorybookEvent}>handleStorybookEvent</button> is used to connect component events to the storybook.</p>
+      <p class="note">Example of code in story template: &lt;lightning-button onclick=&lcub;handleStorybookEvent&rcub;&gt;</p>
+      <h4>Accessibility</h4>
+      <p>This uses the axe-core library tool to inspect the DOM for accessibility violations. It only works on a local environment, or in an environment with Lightning Locker turned off.</p>
+      Example: <input> - this input is missing a label and is an accessibility violation
+      <h4>Controls</h4>
+      <p>These are the public properties available on the component and can be modified directly. The "value" for Objects and Arrays should be valid JSON text.</p>
+      <lightning-badge></lightning-badge>
+      <p class="note">NOTE: The storybook looks for the first element using the selector value. For this example the selector is overridden and set to 'lightning-badge'.</p>
+      <h4>HTML</h4>
+      <p>This tab is meant to be the easiest and fastest way to use a component. You can set the properties in the controls, interact with the component to get events, and then copy the prepared HTML.</p>
+    </div>
+
+</template>

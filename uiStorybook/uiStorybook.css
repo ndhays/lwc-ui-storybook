@@ -1,0 +1,106 @@
+@import "./tailwind.css";
+
+[data-is-fullscreen="true"] {
+  height: 100vw;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 10000;
+}
+
+[data-hidden="true"] {
+  display: none;
+}
+
+pre {
+  overflow: hidden;
+}
+
+lightning-input {
+  margin: 0;
+}
+
+.ui-storybook-tabs-button.active-tab {
+  border-bottom: 2px solid #333;
+  font-weight: bold;
+}
+
+.ui-storybook-tabs-button[data-idx="0"]::before {
+  content: var(--eventcount);
+  color: red;
+  font-size: 0.625rem;
+  font-weight: bold;
+  float: right;
+  margin-top: -0.25rem;
+  margin-left: 0.25rem;
+}
+
+.ui-storybook-tabs-button:hover {
+  background: #efefef;
+}
+
+[data-tab] {
+  min-height: 30vh;
+}
+
+table {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+  padding: 0.5rem;
+}
+
+table th {
+  background: #eee;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+}
+
+table td {
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 0.25rem;
+  padding-left: 0.25rem;
+}
+
+table th:first-child,
+table th:nth-child(2) {
+  width: 10rem;
+}
+
+table th:first-child,
+table td:first-child {
+  font-weight: bold;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+table td:nth-child(2) {
+  padding-left: 0.5rem;
+}
+
+.tooltip {
+  cursor: pointer;
+  position: relative;
+}
+
+.tooltip-content {
+  background: #444;
+  border: 1px solid #222;
+  border-radius: 4px;
+  color: white;
+  display: none;
+  padding: 1rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(1.5rem, -100%);
+  width: max-content;
+  z-index: 999;
+}
+
+.tooltip:hover .tooltip-content {
+  display: block;
+}

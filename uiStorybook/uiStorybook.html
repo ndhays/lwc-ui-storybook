@@ -1,0 +1,372 @@
+<template>
+  <div class="bg-white text-sm" data-is-fullscreen={fullScreen}>
+    <div class="flex py-16">
+      <h1
+        class="bg-neutral-700 text-neutral-100 text-2xl font-bold fixed top-0 left-0 p-4 w-screen z-30"
+      >
+        {name}
+        <lightning-icon
+          class="float-right cursor-pointer"
+          icon-name="utility:close"
+          onclick={handleToggleFullScreen}
+        ></lightning-icon>
+      </h1>
+
+      <div
+        class="fixed top-0 left-0 z-20 h-screen pt-16 w-8 bg-neutral-800 text-center"
+      >
+        <lightning-icon
+          icon-name="utility:list"
+          class="cursor-pointer block mt-4"
+          size="x-small"
+          onclick={handleToggleList}
+        ></lightning-icon>
+        <lightning-icon
+          icon-name="utility:component_customization"
+          class="cursor-pointer block mt-4"
+          size="x-small"
+          onclick={handleToggleSettings}
+        ></lightning-icon>
+        <lightning-icon
+          icon-name="utility:help"
+          class="cursor-pointer block mt-4"
+          size="x-small"
+          onclick={handleToggleHelp}
+        ></lightning-icon>
+      </div>
+
+      <!-- MAIN SECTION -->
+      <div
+        class="flex flex-col ml-8 w-1/5 [&[data-hide-list='true']]:w-0 [&[data-hide-list='true']]:border-none bg-neutral-100 border-r-2 overflow-scroll h-[calc(100vh-4rem)]"
+        data-hide-list={hideList}
+      >
+        <template for:each={myStories} for:item="story">
+          <ul key={story.key}>
+            <template if:true={story.firstInGrouping}>
+              <div class="pl-2 font-bold text-neutral-100" style="background: #006cc1;">
+                {story.grouping}
+              </div>
+            </template>
+            <li>
+              <template if:false={story.onlyOne}>
+                <div
+                  class="pl-1 font-bold cursor-pointer"
+                  data-key={story.key}
+                  onclick={handleToggleStory}
+                >
+                  <template if:false={story.expanded}>
+                    <lightning-icon
+                      class="border-2 border-neutral-400 scale-50"
+                      icon-name="utility:add"
+                      size="xx-small"
+                    ></lightning-icon>
+                  </template>
+                  <template if:true={story.expanded}>
+                    <lightning-icon
+                      class="border-2 border-neutral-400 scale-50"
+                      icon-name="utility:dash"
+                      size="xx-small"
+                    ></lightning-icon>
+                  </template>
+                  <span class="ml-1">{story.title}</span>
+                </div>
+                <ul
+                  data-expanded={story.expanded}
+                  class="[&[data-expanded='false']]:hidden"
+                >
+                  <template for:each={story.variations} for:item="variation">
+                    <li
+                      class="cursor-pointer pt-0.5 pl-8 hover:bg-neutral-200 [&[data-active='true']]:bg-neutral-300 [&[data-active='true']]:font-bold"
+                      key={variation.title}
+                      data-active={variation.active}
+                      data-hidden={variation.hidden}
+                    >
+                      <div
+                        role="button"
+                        data-key={story.key}
+                        data-variation={variation.title}
+                        onclick={handleSelect}
+                      >
+                        {variation.label}
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <template if:true={story.onlyOne}>
+                <template for:each={story.variations} for:item="variation">
+                  <div
+                    class="pl-2 font-bold cursor-pointer hover:bg-neutral-200 [&[data-active='true']]:bg-neutral-300 [&[data-active='true']]:font-bold"
+                    key={variation.title}
+                    data-active={variation.active}
+                  >
+                    <div
+                      role="button"
+                      data-key={story.key}
+                      data-variation={variation.title}
+                      onclick={handleSelect}
+                    >
+                      {variation.label}
+                    </div>
+                  </div>
+                </template>
+              </template>
+            </li>
+          </ul>
+        </template>
+        <div class="mt-8 pt-1 pl-2 pb-2 border-t">
+          <h2 class="font-bold py-1">Helpful Resources:</h2>
+          <ul>
+            <li>
+              <a
+                href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc"
+                target="_blank"
+                >LWC Docs</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.lightningdesignsystem.com/getting-started/"
+                target="_blank"
+                >SLDS Docs</a
+              >
+            </li>
+            <!-- <li><a href="https://tailwindcss.com/docs/installation" target="_blank">Tailwind Docs</a></li> -->
+            <li>
+              <a
+                href="https://accessibilityinsights.io/docs/web/overview/"
+                target="_blank"
+                >Accessibility Insights</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col w-4/5 [&[data-hide-list='true']]:w-[calc(100vw-2rem)]"
+        data-hide-list={hideList}
+      >
+        <template if:true={selected.key}>
+          <!-- story component holder -->
+          <div
+            class="axe-spot grow-0 shrink-0 overflow-scroll basis-[50vh] [&[data-drawer-closed='true']]:basis-[calc(100vh-6rem)] [&[data-hide-settings='true']]:basis-[calc(100vh-4rem)]"
+            data-drawer-closed={drawerClosed}
+            data-hide-settings={hideSettings}
+          >
+            <template if:true={loaded}>
+              <div class={themeClass}>
+                <c-ui-storybook
+                  component={selected.key}
+                  variation={selected.variation}
+                  props={myProps}
+                  stories={stories}
+                  onstorybookevent={handleStorybookEvent}
+                >
+                </c-ui-storybook>
+              </div>
+            </template>
+          </div>
+
+          <div
+            class="fixed bottom-0 border-t p-b-4 grow-0 shrink-0 overflow-scroll relative basis-[calc(50vh-4rem)] [&[data-hide-settings='true']]:basis-0"
+            data-hide-settings={hideSettings}
+          >
+            <div
+              class="absolute left-1/2 top-1 w-3 h-3 border-r-2 border-b-2 border-neutral-300 cursor-pointer rotate-45 hover:border-neutral-400 [&[data-dc='true']]:rotate-[225deg] [&[data-dc='true']]:top-2"
+              data-dc={drawerClosed}
+              onclick={handleToggleDrawer}
+            ></div>
+            <h2 class="text-xl font-bold py-1 px-2">
+              {storyComponent.name}
+              <span class="text-sm ml-1"
+                >(
+                <template if:true={storyComponent.version}
+                  >version {storyComponent.version}</template
+                >
+                <template if:false={storyComponent.version}>beta</template>
+                )</span
+              >
+            </h2>
+            <template if:true={storyComponent.description}>
+              <p class="px-2">{storyComponent.description}</p>
+            </template>
+            <p class="float-right py-1 px-2">{storyComponentSelector}</p>
+            <p class="py-1 px-2"><i>{selected.variation}</i></p>
+
+            <div class="ui-storybook-tabs-buttons flex border-y">
+              <template for:each={tabs} for:item="tab" for:index="i">
+                <div
+                  key={tab}
+                  role="button"
+                  tabindex="0"
+                  class="ui-storybook-tabs-button cursor-pointer py-2 px-4 border-b-2 border-transparent"
+                  data-idx={i}
+                  onclick={handleChangeTab}
+                >
+                  {tab}
+                </div>
+              </template>
+            </div>
+
+            <div data-tab="Actions" class="hidden">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Event</th>
+                    <th>Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template for:each={events} for:item="event">
+                    <tr key={event.key}>
+                      <td>{event.type}</td>
+                      <td class="font-mono">{event.detail}</td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+            <div data-tab="Accessibility" class="hidden">
+              <div class="p-4">
+                <template if:true={accessibiltyLoading}>
+                  <div>Checking . . .</div>
+                </template>
+                <template if:false={accessibiltyLoading}>
+                  <template if:true={accessibilityProblem}>
+                    <div>
+                      There was an error loading the accessibility tool.
+                    </div>
+                    <div>
+                      NOTE: This tool does not work on the platform (Lightning
+                      Locker).
+                    </div>
+                    <code>{accessibilityProblem}</code>
+                  </template>
+                  <template if:false={accessibilityProblem}>
+                    <template if:false={violations.length}>
+                      <div>No accessibility violations found!</div>
+                      <div class="text-xs">
+                        NOTE: Automated accessibility tests will not catch all
+                        violations. Use browser plugins and manual testing to
+                        ensure accessibility compliance.
+                      </div>
+                    </template>
+                    <template if:true={violations.length}>
+                      <div class="pb-4 border-b font-bold">
+                        Accessibility Violations: {violations.length}
+                      </div>
+                    </template>
+                    <template for:each={violations} for:item="violation">
+                      <div class="pt-2" key={violation.id}>
+                        <a
+                          class="text-base font-bold"
+                          href={violation.helpUrl}
+                          target="_blank"
+                          >{violation.help}</a
+                        >
+                        <pre
+                          class="border-2 border-red-500 text-xs mt-2 py-2 px-4"
+                        >
+{violation.html}</pre
+                        >
+                        <pre class="text-sm pt-2 pb-4 border-b-2">
+{violation.failure}</pre
+                        >
+                      </div>
+                    </template>
+                  </template>
+                </template>
+              </div>
+            </div>
+
+            <div data-tab="Controls" class="hidden">
+              <table>
+                <thead>
+                  <tr>
+                    <th>@api property</th>
+                    <th>Type</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template for:each={myDisplayedProps} for:item="prop">
+                    <tr
+                      key={prop.name}
+                      class="[&[data-is-additional='true']]:bg-neutral-200"
+                      data-is-additional={prop.isAdditional}
+                    >
+                      <td>
+                        {prop.name}
+                        <template if:true={prop.helpText}>
+                          <span class="tooltip">
+                            <lightning-icon
+                              class="slds-m-left_x-small"
+                              icon-name="utility:info"
+                              size="xx-small"
+                            ></lightning-icon>
+                            <div class="tooltip-content">{prop.helpText}</div>
+                          </span>
+                        </template>
+                      </td>
+                      <td class="font-mono">{prop.type}</td>
+                      <td>
+                        <template if:true={prop.isCheckbox}>
+                          <lightning-input
+                            data-name={prop.name}
+                            type="toggle"
+                            label={prop.name}
+                            variant="label-hidden"
+                            checked={prop.value}
+                            onchange={handlePropChange}
+                            message-toggle-active=""
+                            message-toggle-inactive=""
+                          >
+                          </lightning-input>
+                        </template>
+
+                        <template if:true={prop.isText}>
+                          <lightning-input
+                            data-json={prop.isJson}
+                            data-name={prop.name}
+                            label={prop.name}
+                            variant="label-hidden"
+                            value={prop.value}
+                            onchange={handlePropChange}
+                          >
+                          </lightning-input>
+                        </template>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              data-tab="HTML"
+              class="hidden slds-p-around_large slds-is-relative"
+            >
+              <template if:true={storyComponent.noHTML}>
+                <p>
+                  This component does not display HTML code. Refer to the
+                  documentation above or inspect the page to see HTML/CSS code.
+                </p>
+              </template>
+              <template if:false={storyComponent.noHTML}>
+                <div class="absolute right-4">
+                  <lightning-button-icon
+                    icon-name="utility:copy_to_clipboard"
+                    onclick={handleCopyHTML}
+                  ></lightning-button-icon>
+                </div>
+                <pre class="text-blue-600">{formattedHTML}</pre>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</template>

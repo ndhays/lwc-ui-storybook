@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+}
+
+td:first-child() {
+  font-weight: bold;
+}
+
+td:nth-child(2) {
+  font-style: italic;
+}
+
+.storybook-req {
+  color: rgb(184, 14, 14);
+  font-weight: bold;
+}
+
+h3, h4 {
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+}
+
+.note {
+  color: magenta;
+  font-size: 0.825rem;
+}
+
+.tooltip {
+  cursor: pointer;
+  position: relative;
+}
+
+.tooltip-content {
+  background: #444;
+  border: 1px solid #222;
+  border-radius: 4px;
+  color: white;
+  display: none;
+  padding: 1rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(1.5rem, -100%);
+  width: max-content;
+  z-index: 999;
+}
+
+.tooltip:hover .tooltip-content {
+  display: block;
+}
